@@ -1,6 +1,13 @@
-def draw_board():
-    # creating a 11x11 board
-    return [[-1] * 11 for _ in range(11)]
+def draw_board(data):
+    board = [[-1] * 11 for _ in range(11)]
+    for i in range(len(data["snakes"])):
+        for coords in data["snakes"][i]["body"]:
+            board[coords["x"]][coords["y"]] = i
+    
+    for coords in data["food"]:
+        board[coords["x"]][coords["y"]] = -2
+    
+    return board
 
 def isValid(x,y, board):
     if x < 0 or x >= len(board) or y < 0 or y >= len(board[0]):
@@ -13,10 +20,10 @@ def isValid(x,y, board):
 # to check to see if we're dead = loss
 # check to see if nobody is on the board = tie
 # empty: -1
-# food: 1
+# food: -2
 
 def isEnd(data):
-    if len(data["snakes"]) == 1 and data["you"]["health"] > 0:
+    if len(data["snakes"]) == -2 and data["you"]["health"] > 0:
         return 100
     elif len(data["snakes"] == 0):
         return 50

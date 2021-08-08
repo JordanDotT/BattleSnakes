@@ -56,7 +56,8 @@ def handle_move():
 
     # TODO - look at the server_logic.py file to see how we decide what move to return!
     # move = server_logic.choose_move(data)
-    maxv, move = minimax.findMax()
+    board = minimax.draw_board(data["board"])
+    maxv, move = minimax.findMax(data, board)
     return {"move": move}
 
 
