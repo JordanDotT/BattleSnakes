@@ -4,14 +4,13 @@ import os
 from flask import Flask
 from flask import request
 
-import server_logic
 import minimax
 
 
 app = Flask(__name__)
 
 
-@app.get("/")
+@app.route("/", methods=['GET'])
 def handle_info():
     """
     This function is called when you register your Battlesnake on play.battlesnake.com
@@ -34,7 +33,7 @@ def handle_info():
     }
 
 
-@app.post("/start")
+@app.route("/start", methods=['POST'])
 def handle_start():
     """
     This function is called everytime your snake is entered into a game.
@@ -46,7 +45,7 @@ def handle_start():
     return "ok"
 
 
-@app.post("/move")
+@app.route("/move", methods=['POST'])
 def handle_move():
     """
     This function is called on every turn of a game. It's how your snake decides where to move.
@@ -61,7 +60,7 @@ def handle_move():
     return {"move": move}
 
 
-@app.post("/end")
+@app.route("/end", methods=['POST'])
 def end():
     """
     This function is called when a game your snake was in ends.
