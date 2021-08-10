@@ -12,15 +12,6 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET'])
 def handle_info():
-    """
-    This function is called when you register your Battlesnake on play.battlesnake.com
-    See https://docs.battlesnake.com/guides/getting-started#step-4-register-your-battlesnake
-
-    It controls your Battlesnake appearance and author permissions.
-    For customization options, see https://docs.battlesnake.com/references/personalization
-
-    TIP: If you open your Battlesnake URL in browser you should see this data.
-    """
     print("INFO")
 
     return {
@@ -48,15 +39,20 @@ def handle_start():
 @app.route("/move", methods=['POST'])
 def handle_move():
     """
-    This function is called on every turn of a game. It's how your snake decides where to move.
     Valid moves are "up", "down", "left", or "right".
     """
     data = request.get_json()
+    sim = minimax.Simulation(data["board"])
+    maxv, move = sim.findMax(data)
 
-    # TODO - look at the server_logic.py file to see how we decide what move to return!
-    # move = server_logic.choose_move(data)
-    board = minimax.draw_board(data["board"])
-    maxv, move = minimax.findMax(data, board)
+    if move == [0, 1]:
+        move = "right"
+    elif move == [0, -1]:
+        move = "left"
+    elif move == [1, 0]:
+        move = "up"
+    else:
+        move = "down"
     return {"move": move}
 
 
@@ -64,7 +60,8 @@ def handle_move():
 def end():
     """
     This function is called when a game your snake was in ends.
-    It's purely for informational purposes, you don't have to make any decisions here.
+    It's purely for informational purposes, you don't have to make any 
+    decisions here.
     """
     data = request.get_json()
 
