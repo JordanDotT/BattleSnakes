@@ -1,19 +1,23 @@
+import math
+
 class Simulation:
 
-    # assign values to the board 
+    # assign values to the board
     # food: -2
     # snake: (0-8 depending on the order that they're presented from the request)
     def __init__(self, data):
-        self.board = [[-1] * 11 for _ in range(11)]
+        self.height = data['height']
+        self.width = data['width']
+        self.board = [[-1] * self.height for _ in range(self.width)]
         self.directions = [[0, 1], [0, -1], [1, 0], [-1, 0]]
         self.allSnakes = {data["snakes"][i]["name"]:i for i in range(len(data["snakes"]))}
 
         for i in range(len(data["snakes"])):
             for coords in data["snakes"][i]["body"]:
-                self.board[10 - coords["y"]][coords["x"]] = i
+                self.board[self.height - 1 - coords["y"]][coords["x"]] = 1
 
         for coords in data["food"]:
-            self.board[10 - coords["y"]][coords["x"]] = -2
+            self.board[self.height - 1 - coords["y"]][coords["x"]] = -2
 
     def isValid(self, x, y):
         if x < 0 or x >= len(self.board) or y < 0 or y >= len(self.board[0]):
@@ -45,8 +49,8 @@ class Simulation:
     def findMax(self, data):
         maxv = -101
         move = None
-
-        result = self.isEnd(data, "hello")
+        name = data["you"]["name"]
+        result = self.isEnd(data, name)
         if result:
             return (result, None)
 
@@ -55,13 +59,12 @@ class Simulation:
 
         for dirr in self.directions:
             if self.isValid(x + dirr[0], y + dirr[1]):
-                self.board[x+dirr[0]][y+dirr[1]] = self.allSnakes["hello"]
+                self.board[x+dirr[0]][y+dirr[1]] = self.allSnakes[name]
                 (m, move) = self.findMin(data)
                 if m > maxv:
                     maxv = m
                     move = dirr
                 self.board[x+dirr[0]][y+dirr[1]] = -1
-
         return (maxv, move)
 
     # # evaluate based on closeness to food and the center
@@ -71,8 +74,22 @@ class Simulation:
     def findMin(self,data):
         minv = 101
         move = None
+        distance = 9999
+        enemy = {"name":""}
+        # Find enemy (closest)
+        for i in range(len(data['board']['snakes'])):
+            if data['board']['snakes'][i]['id'] != id:
+                if data['board']['snakes'][i]['health'] >= 0:
+                    other_head = data['board']['snakes'][i]['head']
+                    temp_dist = math.sqrt(
+                        ((data["you"]["head"]['x'] - other_head['x']) ** 2) + ((data["you"]["head"]['y'] - other_head['y']) ** 2))
+                    if temp_dist < distance:
+                        distance = temp_dist
+                        enemy = data['board']['snakes'][i]
 
-        result = self.isEnd(data, "Yung Snek V0")
+        enemy_name = enemy["name"]
+
+        result = self.isEnd(data, enemy_name)
         if result:
             return (result, None)
 
@@ -81,7 +98,7 @@ class Simulation:
 
         for dirr in self.directions:
             if self.isValid(x + dirr[0], y + dirr[1]):
-                self.board[x+dirr[0]][y+dirr[1]] = self.allSnakes["Yung Snek V0"]
+                self.board[x+dirr[0]][y+dirr[1]] = self.allSnakes[enemy_name]
                 (m, move) = self.findMax(data)
                 if m < minv:
                     minv = m
