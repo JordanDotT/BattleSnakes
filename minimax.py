@@ -1,8 +1,4 @@
 class Simulation:
-
-    # assign values to the board 
-    # food: -2
-    # snake: (0-8 depending on the order that they're presented from the request)
     def __init__(self, data):
         self.board = [[-1] * 11 for _ in range(11)]
         self.directions = [[0, 1], [0, -1], [1, 0], [-1, 0]]
@@ -29,13 +25,11 @@ class Simulation:
     # food: -2
     def isEnd(self, data, currentSnake):
       index = self.allSnakes[currentSnake]
-      # condition that we've won
+
       if len(data["board"]["snakes"]) == 1 and data["board"]["snakes"][index]["health"] > 0:
           return 100
-      # condition that it's a tie
       elif len(data["board"]["snakes"]) == 0:
           return 50
-      # condition that we lost
       elif data["board"]["snakes"][index]["health"] == 0:
           return -100
       return None
