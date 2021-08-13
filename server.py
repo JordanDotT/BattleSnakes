@@ -17,9 +17,9 @@ def handle_info():
     return {
         "apiversion": "1",
         "author": "",  # TODO: Your Battlesnake Username
-        "color": "#888888",  # TODO: Personalize
-        "head": "beluga",  # TODO: Personalize
-        "tail": "default",  # TODO: Personalize
+        "color": "#1D3C0E",  # TODO: Personalize
+        "head": "fang",  # TODO: Personalize
+        "tail": "curled",  # TODO: Personalize
 
     }
 
@@ -44,29 +44,31 @@ def handle_move():
     data = request.get_json()
     sim = minimax.Simulation(data["board"])
     maxv, move = sim.findMax(data)
-
+    print(maxv, move)
     if move == [0, 1]:
         move = "right"
     elif move == [0, -1]:
         move = "left"
     elif move == [1, 0]:
-        move = "up"
-    else:
         move = "down"
+    else:
+        move = "up"
+    
+    print(move)
     return {"move": move}
 
 
 @app.route("/end", methods=['POST'])
 def end():
-    """
-    This function is called when a game your snake was in ends.
-    It's purely for informational purposes, you don't have to make any 
-    decisions here.
-    """
-    data = request.get_json()
+  """
+  This function is called when a game your snake was in ends.
+  It's purely for informational purposes, you don't have to make any 
+  decisions here.
+  """
+  data = request.get_json()
 
-    print(f"{data['game']['id']} END")
-    return "ok"
+  print(f"{data['game']['id']} END")
+  return "ok"
 
 
 if __name__ == "__main__":
